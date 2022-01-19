@@ -79,8 +79,10 @@ public class JwtUtil {
     }
 
     public static void main(String[] args) throws Exception {
+        //加密
 //        String jwt = createJWT("2123");
-        Claims claims = parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyOTY2ZGE3NGYyZGM0ZDAxOGU1OWYwNjBkYmZkMjZhMSIsInN1YiI6IjIiLCJpc3MiOiJzZyIsImlhdCI6MTYzOTk2MjU1MCwiZXhwIjoxNjM5OTY2MTUwfQ.NluqZnyJ0gHz-2wBIari2r3XpPp06UMn4JS2sWHILs0");
+        //解密
+        Claims claims = parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0OGM2YjhlYTU1ODk0YjY1YTI3OGEwN2VjYzIwMDA5MyIsInN1YiI6IjEiLCJpc3MiOiJzZyIsImlhdCI6MTY0MjU2MjEwMSwiZXhwIjoxNjQyNTY1NzAxfQ.BeUlG4cAXW5gIMu75HlnZMUmRKYP29QOhEkW-yopAAI");
         String subject = claims.getSubject();
         System.out.println(subject);
 //        System.out.println(claims);

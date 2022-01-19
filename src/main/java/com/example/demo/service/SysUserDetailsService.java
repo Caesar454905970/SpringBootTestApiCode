@@ -11,6 +11,10 @@ import java.util.Collection;
 
 
 //封装用户的信息
+
+/**
+ * 登录认证的时候，AuthenticationManager的authenticate方法来进行用户认证
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
