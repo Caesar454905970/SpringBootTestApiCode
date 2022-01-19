@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/hello").permitAll()
                 // 对于登录接口 允许匿名访问（未登录才能访问）
                 .antMatchers("/sysUser/login").anonymous()
-//                .antMatchers("/testCors").hasAuthority("system:dept:list222")
+                //对资源进行权限控制:和controller加注解相同
+                // .antMatchers("/testCors").hasAuthority("system:dept:list222")
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
@@ -67,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //配置授权失败处理器
                 .accessDeniedHandler(accessDeniedHandler);
 
-        //允许跨域
+        //二开启SpringSecurity的跨域访问
         http.cors();
     }
 

@@ -28,6 +28,13 @@ public class SysUserController {
 
     @RequestMapping("/sysUser")
     @PreAuthorize("hasAuthority('system:user:list1')") //判断当前请求该接口的用户是否具有，test的权限
+    //@PreAuthorize("hasAnyAuthority('admin','test','system:dept:list')") //多个权限：用户只要有这三个权限中的任意一个都可以进行访问，
+
+    //@PreAuthorize("hasRole('system:dept:list')")//会自动拼接一个ROle_的前缀_
+    //@PreAuthorize("hasAnyRole('admin','system:dept:list')") //会自动拼接一个ROle_的前缀_；多个权限：用户只要有这三个权限中的任意一个都可以进行访问，
+
+    //自定义权限校验的规则：expression/SGExpressionRoot
+    //@PreAuthorize("@ex.hasAuthority('system:user:list1')")
     public String hello(){
         return "hello";
     }
