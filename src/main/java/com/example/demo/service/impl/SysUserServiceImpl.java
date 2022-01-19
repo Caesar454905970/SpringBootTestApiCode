@@ -68,7 +68,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String  jwt = JwtUtil.createJWT(userid); //把userid生成token
 
 
-        //把完整的信息存入redis userid作为key,用户信息作为value
+        //把完整的信息存入redis userid作为key,用户信息+权限信息作为value
         redisCache.setCacheObject("login:"+userid,sysUserDetails);
 
 

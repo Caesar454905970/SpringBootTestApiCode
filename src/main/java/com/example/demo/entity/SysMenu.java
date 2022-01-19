@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 菜单表
+ * 菜单表（权限表）
  * </p>
  *
  * @author demo

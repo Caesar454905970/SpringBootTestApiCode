@@ -11,10 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true) //开启对请求进行权限控制
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //创建BCryptPasswordEncoder注入容器
@@ -28,13 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired //注入到容器中
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
-//
-//
-//    @Autowired
-//    private AuthenticationEntryPoint authenticationEntryPoint;
-//
-//    @Autowired
-//    private AccessDeniedHandler accessDeniedHandler;
+
+
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -58,12 +60,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //添加过滤器的位置：认证过滤器在自解码过滤器之前
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        //配置异常处理器
-//        http.exceptionHandling()
-//                //配置认证失败处理器
-//                .authenticationEntryPoint(authenticationEntryPoint)
-//                //配置授权失败处理器
-//                .accessDeniedHandler(accessDeniedHandler);
+        //配置异常处理器（登录认证和请求权限认证）
+        http.exceptionHandling()
+                //配置认证失败处理器
+                .authenticationEntryPoint(authenticationEntryPoint)
+                //配置授权失败处理器
+                .accessDeniedHandler(accessDeniedHandler);
 
         //允许跨域
         http.cors();

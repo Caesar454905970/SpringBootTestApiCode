@@ -2,6 +2,7 @@ package com.example.demo;
 
 
 import com.example.demo.entity.SysUser;
+import com.example.demo.mapper.SysMenuMapper;
 import com.example.demo.mapper.SysUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,14 @@ public class DemoApplicationTests {
 
 	 }
 
+	@Autowired
+	private SysMenuMapper sysMenuMapper;
+
+	//测试selectPermsByUserId是否能返回对应用户的权限信息
+	 @Test
+	public void selectPermsByUserId(){
+		 List<String> list= sysMenuMapper.selectPermsByUserId(1L);
+		 System.out.println(list);
+	 }
 
 }

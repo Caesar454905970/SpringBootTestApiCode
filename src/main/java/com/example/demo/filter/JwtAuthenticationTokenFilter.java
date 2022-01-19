@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
+ * 认证过滤器（所有的请求=类似于中间件，判断用户是否已经登录，判断用户是否具有权限进行访问)
  * OncePerRequestFilter可以实现，所有的请求只会通过这个过滤器一次
  */
 @Component
@@ -63,7 +64,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 
         //存入SecurityContextHolder：后面所有的过滤器都从SecurityContextHolder拿用户信息（登录的时候也可以直接存入了）
-        //TODO 获取权限信息封装到Authentication中
+        // 获取SysUserDetailsServecelmpl登录查询到权限信息封装到Authentication中
         /**
          * 传入三个参数：用户信息 ，null ,权限信息
          */

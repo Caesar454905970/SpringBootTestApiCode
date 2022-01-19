@@ -5,6 +5,7 @@ import com.example.demo.entity.ResponseResult;
 import com.example.demo.entity.SysUser;
 import com.example.demo.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysUserController {
 
 
+
     @RequestMapping("/sysUser")
+    @PreAuthorize("hasAuthority('system:user:list1')") //判断当前请求该接口的用户是否具有，test的权限
     public String hello(){
         return "hello";
     }
