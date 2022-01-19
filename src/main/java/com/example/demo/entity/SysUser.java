@@ -1,11 +1,10 @@
 package com.example.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -84,6 +83,7 @@ public class SysUser implements Serializable {
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT) //自动填充
     private LocalDateTime createTime;
 
     /**
@@ -94,6 +94,7 @@ public class SysUser implements Serializable {
     /**
      * 更新时间
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE) //自动填充
     private LocalDateTime updateTime;
 
     /**
@@ -101,5 +102,11 @@ public class SysUser implements Serializable {
      */
     private Integer delFlag;
 
+    /**
+     *乐观锁：保证对数据的操作不发生冲突
+     */
+    @Version
+    @TableField(fill = FieldFill.INSERT) //自动填充
+    private Integer version;
 
 }

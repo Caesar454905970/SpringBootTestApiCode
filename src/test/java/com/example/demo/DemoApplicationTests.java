@@ -1,6 +1,7 @@
 package com.example.demo;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.entity.SysUser;
 import com.example.demo.mapper.SysMenuMapper;
 import com.example.demo.mapper.SysUserMapper;
@@ -65,4 +66,53 @@ public class DemoApplicationTests {
 		 System.out.println(list);
 	 }
 
+	 //测试自动填充的字段:插入一个sys_user
+	@Test
+	public void testFill(){
+		SysUser user = new SysUser();
+		user.setUserName("三更草堂333");
+		user.setPassword("7777888");
+		int r = sysUserMapper.insert(user);
+		System.out.println(r);
+	}
+
+
+	//测试自动填充的字段:更新一个sys_user
+	@Test
+	public void testFill1(){
+		SysUser user = new SysUser();
+		user.setUserName("三更草堂3331");
+		user.setId(4L);
+		int r = sysUserMapper.update(user,null);
+		System.out.println(r);
+	}
+
+
+	//测试逻辑删除
+	@Test
+	public void testDel(){
+		int i = sysUserMapper.deleteById(4L);
+		System.out.println(i);
+	}
+	//删除之后进行查询
+	@Test
+	public void testSel(){
+		sysUserMapper.selectList(null);
+	}
+
+
+
+	//测试乐观锁
+	@Test
+	public void testVersion(){
+		//查询id为4的数据
+		QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>(); //queryWrapper用来封装查询条件
+		queryWrapper.eq("id",5);
+		SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+
+
+		//对id为4的数据进行更新  把price修改为88
+		sysUser.setUserName("三更草堂1111");
+		sysUserMapper.updateById(sysUser);
+	}
 }
