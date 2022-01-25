@@ -1,16 +1,17 @@
 package com.example.demo.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.ResponseResult;
 import com.example.demo.entity.SysUser;
+import com.example.demo.mapper.SysUserMapper;
 import com.example.demo.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -23,6 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 
 public class SysUserController {
+
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
 
 
@@ -65,6 +70,24 @@ public class SysUserController {
         //登录
         //  调用servie
         return iSysUserService.logout(); //alt+回车，自动创建方法
+    }
+
+
+
+    /***
+     * 用户列表查询
+     * @return
+     */
+    @PostMapping("/sysUser/List")
+    public ResponseResult<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize,
+                              @RequestParam(defaultValue = "") String search) {
+        LambdaQueryWrapper<SysUser> wrapper = Wrappers.lambdaQuery();
+//        if (StrUtil.isNotBlank(search)) {
+//            wrapper.like(Role::getName, search);
+//        }
+        Page<SysUser> RolePage = sysUserMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return new ResponseResult(200,"查询用户列表成功",RolePage);
     }
 
 }

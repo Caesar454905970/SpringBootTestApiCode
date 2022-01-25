@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.ResponseResult;
 import com.example.demo.entity.SysUser;
 import com.example.demo.mapper.SysUserMapper;
@@ -91,4 +93,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         return new ResponseResult(200,"注销成功");
     }
+
+    @Override
+    public ResponseResult sysUserList(Integer pageNum, Integer pageSize) {
+//        IPage<SysUser> page = new Page<>();
+//        //设置每页条数
+//        page.setSize(2);
+//        //设置查询第几页
+//        page.setCurrent(1);
+
+        List<SysUser> sysUsers = sysUserMapper.selectList(null);
+        System.out.println(sysUsers);
+        return new ResponseResult(200,"查询所有用户成功",sysUsers);
+    }
+
+
 }
