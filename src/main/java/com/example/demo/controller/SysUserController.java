@@ -42,6 +42,12 @@ public class SysUserController {
     @Autowired
     private ISysUserService iSysUserService;
 
+
+    /***
+     * 用户登录
+     * @param sysUser
+     * @return
+     */
     @PostMapping("/sysUser/login")
     public ResponseResult login(@RequestBody SysUser sysUser){
         //登录
@@ -49,6 +55,11 @@ public class SysUserController {
         return iSysUserService.login(sysUser); //alt+回车，自动创建方法
     }
 
+
+    /***
+     * 用户注销
+     * @return
+     */
     @PostMapping("/sysUser/logout")
     public ResponseResult logout(){
         //登录

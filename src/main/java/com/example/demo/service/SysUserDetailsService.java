@@ -41,7 +41,6 @@ public class SysUserDetailsService implements UserDetails {
     @Override //需要进行方法的重写
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //把permissions中的String类型的权限信息封装成SimleGrantedAuthority对象
-
         // 第一次进行转换。后面不为空直接调用前面的转化结果：把List<SimpleGrantedAuthority>定义成 成员变量 判断是否为空
         //但是用户权限被修改了，就必须重新登录进行写入
         if(authorities!=null){
@@ -52,7 +51,6 @@ public class SysUserDetailsService implements UserDetails {
                 .collect(Collectors.toList());
         return authorities;
     }
-
     //用于获取用户密码
     @Override
     public String getPassword() {
