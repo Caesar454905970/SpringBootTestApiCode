@@ -17,12 +17,21 @@ spring:
         min-idle: 0
 
 
-
+  #mysql数据库
   datasource:
     url: jdbc:mysql://111.229.91.20:3306/springboot?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8
     username: springboot
     password: springboot
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  data:
+    mongodb:
+      database: chengqiang
+      host: 111.229.91.20
+      port: 27017
+#      username: xxxx
+#      password: xxxx
 
 
 mybatis-plus:

@@ -49,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //所有的都可以进行访问
                 .antMatchers("/hello").permitAll()
+                .antMatchers("/hello1").permitAll()
                 // 对于登录接口 允许匿名访问（未登录才能访问）
                 .antMatchers("/sysUser/login").anonymous()
                 //对资源进行权限控制:和controller加注解相同

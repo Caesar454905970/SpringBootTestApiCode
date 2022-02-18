@@ -2,6 +2,8 @@ package com.example.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.demo.common.UserConstants;
+import com.example.demo.common.utils.StringUtils;
 import com.example.demo.entity.ResponseResult;
 import com.example.demo.entity.SysUser;
 import com.example.demo.mapper.SysUserMapper;
@@ -16,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +109,69 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         System.out.println(sysUsers);
         return new ResponseResult(200,"查询所有用户成功",sysUsers);
     }
+    /**
+     * 校验用户名称是否唯一
+     *
+     * @param userName 用户名称
+     * @return 结果
+     */
+    @Override
+    public String checkUserNameUnique(String userName)
+    {
+        int count = sysUserMapper.checkUserNameUnique(userName);
+        if (count > 0)
+        {
+            //改用户名已经存在
+            return UserConstants.NOT_UNIQUE; //校验返回结果码:"1"
+        }
+        return UserConstants.UNIQUE; //校验返回结果码:"0"
+    }
 
+    /**
+     * 检验用户信息中的：电话是否唯一
+     * @param user
+     * @return
+     */
+    @Override
+    public String checkPhoneUnique(SysUser user) {
+        int count = sysUserMapper.checkPhoneUnique(user.getPhonenumber());
+        if (count > 0)
+        {
+            //改用户名:电话已经存在
+            return UserConstants.NOT_UNIQUE; //校验返回结果码:"1"
+        }
+        return UserConstants.UNIQUE; //校验返回结果码:"0"
+    }
+
+    /**
+     * 检验用户信息中的：邮箱是否唯一
+     * @param user
+     * @return
+     */
+    @Override
+    public String checkEmailUnique(SysUser user) {
+        int count = sysUserMapper.checkEmailUnique(user.getEmail());
+        if(count > 0){
+            //邮箱已经存在
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
+    }
+
+
+    /**
+     * 新增保存用户信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int insertUser(SysUser user)
+    {
+        // 新增用户信息
+        int rows = sysUserMapper.insertUser(user);
+        return rows;
+    }
 
 }

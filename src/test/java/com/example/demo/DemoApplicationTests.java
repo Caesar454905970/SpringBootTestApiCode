@@ -1,17 +1,28 @@
 package com.example.demo;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.builder.ExcelReaderBuilder;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.SysUser;
+
+import com.example.demo.framework.web.domain.AjaxResult;
 import com.example.demo.mapper.SysMenuMapper;
 import com.example.demo.mapper.SysUserMapper;
+import org.ehcache.core.spi.store.Store;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 //@MapperScan("com.example.demo.mapper") //配置Mapper扫描
@@ -21,7 +32,12 @@ public class DemoApplicationTests {
  	@Autowired
 	private SysUserMapper sysUserMapper;
 
-	 @Test
+	@Autowired
+	public DemoApplicationTests(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
+	}
+
+	@Test
 	public void testSysUserMapper(){
 		 List<SysUser> sysUsers = sysUserMapper.selectList(null);
 		 System.out.println(sysUsers);
@@ -115,4 +131,173 @@ public class DemoApplicationTests {
 		sysUser.setUserName("三更草堂1111");
 		sysUserMapper.updateById(sysUser);
 	}
+
+
+
+
+	//测试mongodb
+	private MongoTemplate mongoTemplate;
+
+
+	 //1.创建集合
+	@Test
+	public void testCreateCollextion(){
+		 mongoTemplate.createCollection("products");
+	}
+
+	//2.删除集合
+	@Test
+	public void testDropCollection(){
+		mongoTemplate.dropCollection("products");
+	}
+
+	//测试easyExcle
+	@Test
+	public void testEasyExcle(){
+
+		//读取文件
+		//创建ExcleReaderBuilder实例
+		ExcelReaderBuilder readerBuilder = EasyExcel.read();
+	    //获取要读取的文件对象
+		readerBuilder.file("C:\\Users\\521\\Desktop\\sys_user.xls");
+		//指定sheet:不指定，会默认读取全部的sheet
+		readerBuilder.sheet("sys_user");
+		//自动关闭输入流
+		readerBuilder.autoCloseStream(true);
+		//设置excle文件格式 .xls
+		readerBuilder.excelType(ExcelTypeEnum.XLS);
+		//注册一个监听器：将每一行读取的结果，进行解析
+		readerBuilder.registerReadListener(new AnalysisEventListener<Map<Integer,String>>() {
+
+			@Override
+			public void invoke(Map<Integer, String> integerStringMap, AnalysisContext analysisContext) {
+				Set<Integer> keySet = integerStringMap.keySet();
+				Iterator<Integer> interator = keySet.iterator();
+				while(interator.hasNext()) {
+					Integer key = interator.next();
+					System.out.print(key +":" +integerStringMap.get(key)+", ");
+
+				}
+				System.out.println("");
+			}
+
+			@Override
+			public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+				//通知用户：所有的行已经读取完毕
+				System.out.println("数据读取完毕");
+			}
+		});
+		//构建读取器
+		ExcelReader reader = readerBuilder.build();
+		//读取数据
+		reader.readAll();
+		//读取完毕
+		reader.finish();
+
+
+		// 读取文件，读取完之后会自动关闭
+        /*
+            pathName        要读的文件路径；"d:\\模拟在线202003班学员信息.xls"
+            head            每行数据对应的实体类；Student.class
+            readListener    读监听器，每读一样就会调用一次该监听器的invoke方法；invoke中可以操作读取到的数据
+
+            sheet方法参数： 工作表的顺序号（从0开始）或者工作表的名字，不传默认为0
+        */
+		//获得一个工作簿对象
+//		EasyExcel.read();
+		//获得一个工作表对象
+
+
+
+
+	}
+
+	//简化版
+	//测试easyExcle
+	@Test
+	public void testEasyExcle1(){
+		List<Map<Integer, String>>  list = new LinkedList<>();
+		EasyExcel.read("C:\\Users\\521\\Desktop\\sys_user.xls") //获取要读取的文件对象
+				.sheet("sys_user") 		//指定sheet:不指定，会默认读取全部的sheet
+				.registerReadListener(new AnalysisEventListener<Map<Integer, String>>(){ //注册一个监听器：将每一行读取的结果，进行解析
+					@Override
+					public void invoke(Map<Integer, String> integerStringMap, AnalysisContext analysisContext) {
+						//把每一次读取的一行integerStringMap放入list
+						list.add(integerStringMap);
+					}
+
+					@Override
+					public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+						System.out.println("数据读取完毕");
+					}
+				}).doRead();
+		//比例List中的数据
+		for(Map<Integer, String> integerStringMap:list){
+			Set<Integer> keySet =integerStringMap.keySet();
+			Iterator<Integer> interator= keySet.iterator();
+			while(interator.hasNext()){
+				Integer key =interator.next();
+				System.out.print(key+":"+integerStringMap.get(key)+", ");
+			}
+			//遍历完一个元素：输出一个换行
+			System.out.println("");
+		}
+
+	}
+
+
+	//简化版：绑定映射的实体类
+	//测试easyExcle
+	//写入数据
+	@Test
+	public void testEasyExcle3(){
+		List<SysUser> list = new ArrayList<>();
+		EasyExcel.read("C:\\Users\\521\\Desktop\\sys_user.xls") //获取要读取的文件对象
+				.head(SysUser.class) //每一列的标题
+				.sheet("sys_user") 		//指定sheet:不指定，会默认读取全部的sheet
+				.registerReadListener(new AnalysisEventListener<SysUser>(){ //注册一个监听器：将每一行读取的结果，进行解析
+
+					@Override
+					public void invoke(SysUser sysUser, AnalysisContext analysisContext) {
+						list.add(sysUser);
+					}
+
+					@Override
+					public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+						System.out.println("数据读取完毕");
+					}
+				}).doRead();
+//		for(SysUser sysUser : list){
+//			System.out.println(sysUser);
+//		}
+
+		System.out.println(list);
+		//list写入excle文件
+		EasyExcel.write("C:\\Users\\521\\Desktop\\sys_user_副本.xls")
+				.head(SysUser.class) //每一列的标题
+				.excelType(ExcelTypeEnum.XLS)
+				.sheet("sys_user")
+				.doWrite(list);
+
+	}
+
+
+	/**
+	 * 查询一个用户id的所有权限列表
+	 * @return
+	 */
+	@Test
+	public AjaxResult testl123(){
+		//创建page对象
+		Page<SysUser> page = new Page<>();
+		//设置每页大小
+		page.setSize(1);
+		//设置当前页码
+		page.setCurrent(1);
+		sysUserMapper.selectMenuByUserId(page);
+		System.out.println(page.getRecords()); //获取传到的数据
+		System.out.println(page.getTotal()); //获取总的记录数
+		return new AjaxResult(200,"查询一个用户id的所有权限列表",page);
+	}
+
 }
